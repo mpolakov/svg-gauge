@@ -1,4 +1,4 @@
-declare module 'svg-gauge' {
+declare module '@dungeon2/svg-gauge' {
   export interface GaugeInstance {
     setMaxValue: (max: number) => void
     setValue: (val: number) => void
