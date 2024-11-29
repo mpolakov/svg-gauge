@@ -147,7 +147,7 @@
 
     /**
      * Gets cartesian co-ordinates for a specified radius and angle (in degrees)
-     * @param cx {Number} The center x co-oriinate
+     * @param cx {Number} The center x co-ordinate
      * @param cy {Number} The center y co-ordinate
      * @param radius {Number} The radius of the circle
      * @param angle {Number} The angle in degrees
@@ -206,6 +206,8 @@
           gaugeColor = opts.color,
           gaugeValueElem,
           gaugeValuePath,
+          gaugeDelimitersEmptyPath,
+          gaugeDelimitersValuePath,
           label = opts.label,
           viewBox = opts.viewBox,
           instance;
@@ -251,6 +253,24 @@
           d: pathString(radius, startAngle, startAngle) // value of 0
         });
 
+        gaugeDelimitersEmptyPath = svg("path", {
+          "class": "gauge-delimiters-empty",
+          display: "none",
+          fill: "none",
+          stroke: "#fff",
+          "stroke-width": 4,
+          d: pathString(radius, startAngle, endAngle)
+        });
+
+        gaugeDelimitersValuePath = svg("path", {
+          "class": 'gauge-delimiters',
+          display: "none",
+          fill: "none",
+          stroke: "#00ff",
+          "stroke-width": 2.5,
+          d: pathString(radius, startAngle, startAngle) // value of 0
+        });
+
         var angle = getAngle(100, 360 - Math.abs(startAngle - endAngle));
         var flag = angle <= 180 ? 0 : 1;
         var gaugeElement = svg("svg", {"viewBox": viewBox || "0 0 100 100", "class": gaugeClass}, [
@@ -262,7 +282,9 @@
             d: pathString(radius, startAngle, endAngle, flag)
           }),
           svg("g", { "class": "text-container" }, [gaugeValueElem]),
-          gaugeValuePath
+          gaugeDelimitersEmptyPath,
+          gaugeDelimitersValuePath,
+          gaugeValuePath,
         ]);
         elem.appendChild(gaugeElement);
       }
@@ -277,6 +299,8 @@
           gaugeValueElem.textContent = label.call(opts, theValue);
         }
         gaugeValuePath.setAttribute("d", pathString(radius, startAngle, angle + startAngle, flag));
+
+        gaugeDelimitersValuePath.setAttribute("d", pathString(radius, startAngle, angle + startAngle, flag));
       }
 
       function setGaugeColor(value, duration) {        
